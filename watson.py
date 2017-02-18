@@ -13,8 +13,8 @@ environment_id = '59401ea6-3614-4c75-baae-90231dcadd6b'
 collection_id = '776be5b8-d34c-4145-8f1a-0dd950a510b3'
 
 # see https://www.ibm.com/watson/developercloud/discovery/api/v1/?python#query-collection
-def query(qopts={}):
-    return discovery.query(environment_id, collection_id, qopts)
+def query(qopts={'query': 'trump'}):
+    return discovery.query(environment_id, collection_id, qopts)['results']
 
 def add_from_url(url):
 	def gen_filename():
@@ -34,7 +34,7 @@ def add_from_url(url):
 				f.close()
 				add_document(filename)
 
-def items(name, query):
+def items(name, query = query()):
 	return [i[name] for i in query]
 
 def add_document(filename):
