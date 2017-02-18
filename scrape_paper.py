@@ -9,9 +9,14 @@ def article_file(article):
     h.update(article.url.encode())
     return 'articles/' + h.hexdigest() + '.json'
 
+import sys
+
+url = sys.argv[1]
+leaning = sys.argv[2]
+
 if download:
 
-    breitbart = newspaper.build('http://huffingtonpost.com', memoize_articles=False)
+    breitbart = newspaper.build(url, memoize_articles=False)
 
     for article in breitbart.articles:
         print('hi')
@@ -25,5 +30,5 @@ if download:
                 'source_url': article.source_url,
                 'title': article.title,
                 'html': article.html,
-                'source_type': 'conservative',
+                'source_type': leaning,
             }, f)
