@@ -1,1 +1,2 @@
 newspaper3k==0.1.9
+watson-developer-cloud==0.23.0
