@@ -1,34 +1,33 @@
 import newspaper
 import json
 import hashlib
-
-download = True
+from newspaper import news_pool
 
 def article_file(article):
     h = hashlib.sha256()
     h.update(article.url.encode())
     return 'articles/' + h.hexdigest() + '.json'
 
-import sys
+papers = [
+    ('slate', 'liberal', 'http://slate.com')
+]
 
-url = sys.argv[1]
-leaning = sys.argv[2]
+for name, leaning, url in papers:
 
-if download:
-
-    breitbart = newspaper.build(url, memoize_articles=False)
-
-    for article in breitbart.articles:
-        print('hi')
+    paper = newspaper.build(url, memoize_articles=False)
+    l = len(paper.articles)
+    i = 0
+    for article in paper.articles:
+        print(name, '{}/{}'.format(i, l))
         article.download()
-        print(article)
+        article.parse()
         with open(article_file(article), 'w') as f:
-            print(article_file(article))
-            print('hi')
             json.dump({
                 'url': article.url,
                 'source_url': article.source_url,
                 'title': article.title,
-                'html': article.html,
-                'source_type': leaning,
+                'text': article.text,
+                'source': name,
+                'leaning': leaning,
             }, f)
+        i += 1
