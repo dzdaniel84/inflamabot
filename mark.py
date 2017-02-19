@@ -56,6 +56,7 @@ obama = Person('Obama', 'people/Barack Obama.txt')
 hitler = Person('Hitler', 'people/Adolf Hitler.txt')
 stalin = Person('Stalin', 'people/Josef Stalin.txt')
 kanye = Person('Kanye', 'people/Kanye West.txt')
+trump = Person('Trump', 'people/Donald Trump.txt')
 
 
 def convo(first, second, start_text, length=20):
