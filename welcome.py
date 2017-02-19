@@ -62,9 +62,13 @@ def run_convos():
         between = get_between()
 
         c = convo(between)
-        while len(c) < 8:
+        i = 0
+        while len(c) < 8 and i < 50:
             print('running regen')
             c = convo(between)
+            i += 1
+        if i == 50:
+            reset()
     reset()
     def do_tick(i):
         global tick
