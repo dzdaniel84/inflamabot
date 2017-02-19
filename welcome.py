@@ -13,7 +13,8 @@
 # limitations under the License.
 
 import os
-from flask import Flask, jsonify
+from flask import Flask, jsonify, Blueprint
+from flask_socketio import SocketIO
 
 app = Flask(__name__)
 
@@ -40,6 +41,13 @@ def SayHello(name):
     }
     return jsonify(results=message)
 
+socketio = SocketIO(app)
+
+@socketio.on('my event')
+def test_message(message):
+    print('[GOT]', message)
+    socketio.emit('my response', {'data': 'got it!'})
+
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
-	app.run(host='0.0.0.0', port=int(port))
+	socketio.run(app, host='0.0.0.0', port=int(port))
