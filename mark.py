@@ -47,7 +47,7 @@ class Person:
             return 'I have nothing to say'
         t = text[random.randint(0, len(text) - 1)]
         thing = self.topics[t][random.randint(0, len(self.topics[t]) - 1)]
-        self.topics[t].remove(thing)
+        #self.topics[t].remove(thing)
         return thing
 
 
