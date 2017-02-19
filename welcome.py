@@ -21,7 +21,7 @@ from mark import *
 
 app = Flask(__name__)
 
-TOTAL_LEN = 15
+TOTAL_LEN = 40
 NUM_TICKS = 8
 
 c = []
