@@ -6,14 +6,21 @@ def gen_filename():
 			yield 'markov{}.txt'.format(counter)
 			counter += 1
 
+def get_text(loc):
+    with open(loc) as f:
+        text = f.read()
+    return text.replace('\n', '')
+
 file_iter = gen_filename()
 
-
-def create_text(text, len = 100000):
+def create_text(url, len = 100000):
 	filename = next(file_iter)
-	text_model = markovify.Text(text)
+	text_model = markovify.Text(get_text(url))
 	f = open(filename, 'w+')
 	for i in range(len):
-		f.write(text_model.make_sentence())
+		try:
+			print('progress: {}'.format(i))
+			f.write(text_model.make_sentence())
+		except TypeError:
+			continue
 	f.close()
-
