@@ -21,10 +21,11 @@ from mark import *
 
 app = Flask(__name__)
 
-TOTAL_LEN = 60
+TOTAL_LEN = 10
 NUM_TICKS = 8
 
 c = []
+between = ()
 tick = 0
 
 @app.route('/')
@@ -40,6 +41,10 @@ socketio = SocketIO(app)
 def obj(e):
     return {'person': e[0], 'txt': e[1]}
 
+def make_between(between):
+    p1, p2 = between
+    return p1.name.lower(), p2.name.lower()
+
 @socketio.on('connect')
 def new_client():
     getIndex = min(tick % NUM_TICKS, 6)
@@ -52,16 +57,22 @@ def run_convos():
 
     def reset():
         global c
-        c = convo(trump, kanye)
+        global between
+        between = get_between()
+
+        c = convo(between)
         while len(c) < 8:
             print('running regen')
-            c = convo(trump, kanye)
+            c = convo(between)
     reset()
     def do_tick(i):
         global tick
         if (i % NUM_TICKS) <= 5:
             print('--->', c[i % NUM_TICKS])
             emit('message', obj(c[i % NUM_TICKS]), namespace='/', broadcast=True)
+        elif (i % NUM_TICKS) == 6:
+            print('----> reveal', between)
+            emit('reveal', {'between': make_between(between)}, namespace='/', broadcast=True)
         elif (i % NUM_TICKS) == 7:
             print('----> reset')
             reset()

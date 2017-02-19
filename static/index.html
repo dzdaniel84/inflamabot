@@ -44,7 +44,34 @@
           crossorigin="anonymous"></script>
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
   <script type="text/javascript" charset="utf-8">
+    var people = {
+        'kanye': {
+            'name': 'Kanye West',
+            'img': 'http://img.wennermedia.com/article-leads-vertical-300/1251227849_kanye_west_290x402.jpg',
+        },
+        'washington': {
+            'name': 'George Washington',
+            'img': 'http://cdn.history.com/sites/2/2013/11/George_Washington-AB.jpeg',
+        },
+        'obama': {
+            'name': 'Barack Obama',
+            'img': 'http://specials-images.forbesimg.com/imageserve/5637de5ae4b0ffa7afe69130/320x486.jpg?fit=scale&background=000000'
+        },
+        'hitler': {
+            'name': "Adolf Hitler",
+            'img': 'https://media1.britannica.com/eb-media/58/129958-004-C9B8B89D.jpg',
+        },
+        'stalin': {
+            'name': 'Josef Stalin',
+            'img': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Stalin_Joseph.jpg/220px-Stalin_Joseph.jpg'
+        },
+        'trump': {
+            'name': 'Donald Trump',
+            'img': 'http://static3.businessinsider.com/image/56feb17752bcd01b008ba4e8-480/donald-trump.jpg'
+        }
+    };
       var socket = io.connect('//' + document.domain + ':' + location.port);
+      var inReveal = false;
       function addLog(log) {
           var chat_pos = '';
           if (log.person == 0) {
@@ -60,11 +87,40 @@
       }
       socket.on('uptd', function (data) {
           $('#chat-field').html('');
+          inReveal = false;
           var logs = data.logs;
           for (var i = 0; i < logs.length; i++) {
               console.log(logs[i]);
               addLog(logs[i]);
           }
+      });
+      socket.on('reveal', function (data) {
+          $(".chat").fadeOut(10, function () {
+              $('#chat-field').html('');
+              console.log(data);
+              inReveal = true;
+              var p1 = people[data.between[0]];
+              var p2 = people[data.between[1]];
+              $('<h3>That was a conversation between...</h3>' +
+                  '<div class="row">' +
+                  '<div class="col col-md-3">' +
+                  '<div class="card">' +
+                  '<div class="card-img" style="background-image: url(\'' + p1.img + '\')"></div>' +
+                  '<div class="card-block">' +
+                  '<h4 class="card-title">' + p1.name + '</h4>' +
+                  '<p class="card-text">(left)</p></div>' +
+                  '</div>' +
+                  '</div>' +
+                  '<div class="col col-md-3">' +
+                  '<div class="card">' +
+                  '<div class="card-img"  style="background-image: url(\'' + p2.img + '\')"></div>' +
+                  '<div class="card-block">' +
+                  '<h4 class="card-title">' + p2.name + '</h4>' +
+                  '<p class="card-text">(right)</p></div>' +
+                  '</div>' +
+                  '</div>' +
+                  '</div>').appendTo($("#chat-field"));
+          });
       });
       socket.on('reset', function (data) {
           $(".chat").fadeOut(function () {
@@ -72,6 +128,10 @@
           });
       });
       socket.on('message', function (data) {
+          if (inReveal) {
+              $('#chat-field').html('');
+              inReveal = false;
+          }
           var x = addLog(data);
           x.hide();
           x.slideDown();

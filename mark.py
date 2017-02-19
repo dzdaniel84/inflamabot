@@ -50,18 +50,25 @@ class Person:
         #self.topics[t].remove(thing)
         return thing
 
-
-#washington = Person('Washington', 'people/George Washington.txt')
+washington = Person('Washington', 'people/George Washington.txt')
 obama = Person('Obama', 'people/Barack Obama.txt')
 #hitler = Person('Hitler', 'people/Adolf Hitler.txt')
-#stalin = Person('Stalin', 'people/Josef Stalin.txt')
+stalin = Person('Stalin', 'people/Josef Stalin.txt')
 kanye = Person('Kanye', 'people/Kanye West.txt')
 trump = Person('Trump', 'people/Donald Trump.txt')
+
+people = [washington, obama, stalin, kanye, trump]
+
+def get_between():
+    p1 = random.choice(people)
+    p2 = random.choice(people)
+    return (p1, p2)
 
 def get_topic(first, second):
     return random.choice(list(first.topics.keys() | second.topics.keys()))
 
-def convo(first, second, length=20):
+def convo(between, length=20):
+    first, second = between
     start_text = get_topic(first, second)
     transcript = []
     first_copy, second_copy = first.topics.copy(), second.topics.copy()
