@@ -14,9 +14,19 @@
 
 import os
 from flask import Flask, jsonify, Blueprint
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, emit
+import time
+from threading import Thread
+from mark import *
 
 app = Flask(__name__)
+
+TOTAL_LEN = 40
+NUM_TICKS = 8
+
+c = []
+between = ()
+tick = 0
 
 @app.route('/')
 def Welcome():
@@ -26,28 +36,56 @@ def Welcome():
 def WelcomeToMyapp():
     return 'Welcome again to my app running on Bluemix!'
 
-@app.route('/api/people')
-def GetPeople():
-    list = [
-        {'name': 'John', 'age': 28},
-        {'name': 'Bill', 'val': 26}
-    ]
-    return jsonify(results=list)
-
-@app.route('/api/people/<name>')
-def SayHello(name):
-    message = {
-        'message': 'Hello ' + name
-    }
-    return jsonify(results=message)
-
 socketio = SocketIO(app)
 
-@socketio.on('my event')
-def test_message(message):
-    print('[GOT]', message)
-    socketio.emit('my response', {'data': 'got it!'})
+def obj(e):
+    return {'person': e[0], 'txt': e[1]}
+
+def make_between(between):
+    p1, p2 = between
+    return p1.name.lower(), p2.name.lower()
+
+@socketio.on('connect')
+def new_client():
+    getIndex = min(tick % NUM_TICKS, 6)
+    emit('uptd', {'logs': [obj(e) for e in c[:getIndex]]})
+
+def run_convos():
+    start_time = time.time()
+    def t():
+        return (time.time() - start_time)
+
+    def reset():
+        global c
+        global between
+        between = get_between()
+
+        c = convo(between)
+        while len(c) < 8:
+            print('running regen')
+            c = convo(between)
+    reset()
+    def do_tick(i):
+        global tick
+        if (i % NUM_TICKS) <= 5:
+            print('--->', c[i % NUM_TICKS])
+            emit('message', obj(c[i % NUM_TICKS]), namespace='/', broadcast=True)
+        elif (i % NUM_TICKS) == 6:
+            print('----> reveal', between)
+            emit('reveal', {'between': make_between(between)}, namespace='/', broadcast=True)
+        elif (i % NUM_TICKS) == 7:
+            print('----> reset')
+            reset()
+            emit('reset', namespace='/', broadcast=True)
+        tick += 1
+    while True:
+        socketio.sleep(0.1)
+        with app.app_context():
+            cur_time = t()
+            while tick < cur_time * (NUM_TICKS / TOTAL_LEN):
+                do_tick(tick)
 
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
-	socketio.run(app, host='0.0.0.0', port=int(port))
+    socketio.start_background_task(run_convos)
+    socketio.run(app, host='0.0.0.0', port=int(port))

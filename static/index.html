@@ -2,34 +2,172 @@
 <html>
 
   <head>
-    <title>Python Flask Starter Application</title>
+    <title>robot flame war!</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="static/stylesheets/style.css">
+    <link rel="stylesheet" href="/static/main.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
   </head>
 
   <body>
-    <table>
-      <tr>
-        <td style= "width:30%;">
-          <img class = "newappIcon" src="static/images/newapp-icon.png">
-        <td>
-            <h1>Hi there!!!!!!</h1>
-          <p>Thanks for creating a
-            <span class = "blue">Python <a href = "http://flask.pocoo.org/">Flask</a> Starter Application</span>.
-    </table>
+    <div class="main container">
+      <div class="page-header">
+        <h1>Robot Flame War</h1>
+      </div>
+      <div class="card">
+        <div class="card-block" id="chat-field">
+          <div class="chat alert left-chat">
+            <img src="/static/bot.png" alt="bot">
+            Hi!
+          </div>
+          <div class="chat alert right-chat">
+            <img src="/static/bot.png" alt="bot">
+            Hello!
+          </div>
+          <div class="chat alert left-chat">
+            <img src="/static/bot.png" alt="bot">
+            Hi!
+          </div>
+          <div class="chat alert right-chat">
+            <img src="/static/bot.png" alt="bot">
+            Hello!
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 
+  <script
+          src="https://code.jquery.com/jquery-3.1.1.js"
+          integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
+          crossorigin="anonymous"></script>
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
   <script type="text/javascript" charset="utf-8">
+    var people = {
+        'kanye': {
+            'name': 'Kanye West',
+            'img': 'http://img.wennermedia.com/article-leads-vertical-300/1251227849_kanye_west_290x402.jpg',
+        },
+        'washington': {
+            'name': 'George Washington',
+            'img': 'http://cdn.history.com/sites/2/2013/11/George_Washington-AB.jpeg',
+        },
+        'obama': {
+            'name': 'Barack Obama',
+            'img': 'http://specials-images.forbesimg.com/imageserve/5637de5ae4b0ffa7afe69130/320x486.jpg?fit=scale&background=000000'
+        },
+        'hitler': {
+            'name': "Adolf Hitler",
+            'img': 'https://media1.britannica.com/eb-media/58/129958-004-C9B8B89D.jpg',
+        },
+        'stalin': {
+            'name': 'Josef Stalin',
+            'img': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Stalin_Joseph.jpg/220px-Stalin_Joseph.jpg'
+        },
+        'trump': {
+            'name': 'Donald Trump',
+            'img': 'http://static3.businessinsider.com/image/56feb17752bcd01b008ba4e8-480/donald-trump.jpg'
+        },
+        'roosevelt': {
+            'name': 'Franklin Roosevelt',
+            'img': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/FDR_1944_Color_Portrait.tif/lossy-page1-220px-FDR_1944_Color_Portrait.tif.jpg'
+        },
+        'bush': {
+            'name': 'George W. Bush',
+            'img': 'http://www.mjhsbnn.com/nich-studentwork/nich-studentwork/hsteinmetz/sport/image/george-bush.jpg'
+        },
+        'homer': {
+            'name': 'Homer Simpson',
+            'img': 'https://upload.wikimedia.org/wikipedia/en/0/02/Homer_Simpson_2006.png'
+        },
+        'jackson': {
+            'name': 'Andrew Jackson',
+            'img': 'http://www.badassoftheweek.com/jackson.jpg'
+        },
+        'kennedy': {
+            'name': 'John Kennedy',
+            'img': 'https://www.gentlemansgazette.com/wp-content/uploads/2015/01/John-F-Kennedy-smiling-in-this-photo-in-a-navy-jacket-paired-with-a-stripe-tie-and-white-linen-pocket-square.jpg',
+        },
+        'lincoln': {
+            'name': 'Abraham Lincoln',
+            'img': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Abraham_Lincoln_O-55,_1861-crop.jpg/250px-Abraham_Lincoln_O-55,_1861-crop.jpg'
+        },
+        'reagan': {
+            'name': 'Ronald Reagan',
+            'img': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Official_Portrait_of_President_Reagan_1985.jpg/220px-Official_Portrait_of_President_Reagan_1985.jpg'
+        },
+        'clinton': {
+            'name': 'Bill Clinton',
+            'img': 'http://specials-images.forbesimg.com/imageserve/5638e0f8e4b0ffa7afe6a0ab/320x486.jpg?fit=scale&background=000000'
+        }
+    };
       var socket = io.connect('//' + document.domain + ':' + location.port);
-      socket.on('connect', function() {
-          socket.emit('my event', {data: 'I\'m connected!'});
+      var inReveal = false;
+      function addLog(log) {
+          var chat_pos = '';
+          if (log.person == 0) {
+              chat_pos = 'left';
+          } else {
+              chat_pos = 'right';
+          }
+          var x = $('<div class="chat alert ' + chat_pos + '-chat">' +
+              '<img src="/static/bot.png" alt="bot">' +
+              log.txt +
+              '</div>').appendTo($("#chat-field"));
+          return x;
+      }
+      socket.on('uptd', function (data) {
+          $('#chat-field').html('');
+          inReveal = false;
+          var logs = data.logs;
+          for (var i = 0; i < logs.length; i++) {
+              console.log(logs[i]);
+              addLog(logs[i]);
+          }
       });
-      socket.on('my response', function (data) {
-          console.log(data);
-      })
+      socket.on('reveal', function (data) {
+          $(".chat").fadeOut(10, function () {
+              $('#chat-field').html('');
+              console.log(data);
+              inReveal = true;
+              var p1 = people[data.between[0]];
+              var p2 = people[data.between[1]];
+              $('<h3>That was a conversation between...</h3>' +
+                  '<div class="row">' +
+                  '<div class="col col-md-3">' +
+                  '<div class="card">' +
+                  '<div class="card-img" style="background-image: url(\'' + p1.img + '\')"></div>' +
+                  '<div class="card-block">' +
+                  '<h4 class="card-title">' + p1.name + '</h4>' +
+                  '<p class="card-text">(left)</p></div>' +
+                  '</div>' +
+                  '</div>' +
+                  '<div class="col col-md-3">' +
+                  '<div class="card">' +
+                  '<div class="card-img"  style="background-image: url(\'' + p2.img + '\')"></div>' +
+                  '<div class="card-block">' +
+                  '<h4 class="card-title">' + p2.name + '</h4>' +
+                  '<p class="card-text">(right)</p></div>' +
+                  '</div>' +
+                  '</div>' +
+                  '</div>').appendTo($("#chat-field"));
+          });
+      });
+      socket.on('reset', function (data) {
+          $(".chat").fadeOut(function () {
+              $('#chat-field').html('');
+          });
+      });
+      socket.on('message', function (data) {
+          if (inReveal) {
+              $('#chat-field').html('');
+              inReveal = false;
+          }
+          var x = addLog(data);
+          x.hide();
+          x.slideDown();
+      });
   </script>
 
 </html>
