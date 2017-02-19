@@ -55,7 +55,7 @@ class Person:
 obama = Person('Obama', 'people/Barack Obama.txt')
 #hitler = Person('Hitler', 'people/Adolf Hitler.txt')
 #stalin = Person('Stalin', 'people/Josef Stalin.txt')
-#kanye = Person('Kanye', 'people/Kanye West.txt')
+kanye = Person('Kanye', 'people/Kanye West.txt')
 trump = Person('Trump', 'people/Donald Trump.txt')
 
 def get_topic(first, second):

@@ -21,8 +21,8 @@ from mark import *
 
 app = Flask(__name__)
 
-TOTAL_LEN = 10
-NUM_TICKS = 7
+TOTAL_LEN = 60
+NUM_TICKS = 8
 
 c = []
 tick = 0
@@ -42,7 +42,7 @@ def obj(e):
 
 @socketio.on('connect')
 def new_client():
-    getIndex = min(tick % NUM_TICKS, NUM_TICKS -1)
+    getIndex = min(tick % NUM_TICKS, 6)
     emit('uptd', {'logs': [obj(e) for e in c[:getIndex]]})
 
 def run_convos():
@@ -52,17 +52,17 @@ def run_convos():
 
     def reset():
         global c
-        c = convo(trump, obama)
+        c = convo(trump, kanye)
         while len(c) < 8:
             print('running regen')
-            c = convo(trump, obama)
+            c = convo(trump, kanye)
     reset()
     def do_tick(i):
         global tick
         if (i % NUM_TICKS) <= 5:
             print('--->', c[i % NUM_TICKS])
             emit('message', obj(c[i % NUM_TICKS]), namespace='/', broadcast=True)
-        elif (i % NUM_TICKS) == 6:
+        elif (i % NUM_TICKS) == 7:
             print('----> reset')
             reset()
             emit('reset', namespace='/', broadcast=True)
