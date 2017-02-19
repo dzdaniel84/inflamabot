@@ -56,8 +56,16 @@ obama = Person('Obama', 'people/Barack Obama.txt')
 stalin = Person('Stalin', 'people/Josef Stalin.txt')
 kanye = Person('Kanye', 'people/Kanye West.txt')
 trump = Person('Trump', 'people/Donald Trump.txt')
+fdroosevelt = Person('Roosevelt', 'people/fdroosevelt.txt')
+gwbush = Person('Bush', 'people/gwbush.txt')
+homer = Person('Homer', 'people/Homer Simpson.txt')
+jackson = Person('Jackson', 'people/jackson.txt')
+kennedy = Person('Kennedy', 'people/kennedy.txt')
+lincoln = Person('Lincoln', 'people/lincoln.txt')
+reagan = Person('Reagan', 'people/reagan.txt')
+clinton = Person('Clinton', 'people/clinton.txt')
 
-people = [washington, obama, stalin, kanye, trump]
+people = [washington, obama, stalin, kanye, trump, fdroosevelt, gwbush, homer, jackson, kennedy, lincoln, reagan, clinton]
 
 def get_between():
     p1 = random.choice(people)
