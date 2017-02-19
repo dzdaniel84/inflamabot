@@ -21,8 +21,11 @@ from mark import *
 
 app = Flask(__name__)
 
-TOTAL_LEN = 30
+TOTAL_LEN = 10
 NUM_TICKS = 7
+
+c = []
+tick = 0
 
 @app.route('/')
 def Welcome():
@@ -34,25 +37,31 @@ def WelcomeToMyapp():
 
 socketio = SocketIO(app)
 
+def obj(e):
+    return {'person': e[0], 'txt': e[1]}
+
+@socketio.on('connect')
+def new_client():
+    getIndex = min(tick % NUM_TICKS, NUM_TICKS -1)
+    emit('uptd', {'logs': [obj(e) for e in c[:getIndex]]})
+
 def run_convos():
     start_time = time.time()
     def t():
         return (time.time() - start_time)
-    c = []
+
     def reset():
-        nonlocal c
+        global c
         c = convo(trump, obama)
-        while len(c) < 7:
+        while len(c) < 8:
             print('running regen')
             c = convo(trump, obama)
-    tick = 0
     reset()
     def do_tick(i):
-        nonlocal tick
+        global tick
         if (i % NUM_TICKS) <= 5:
             print('--->', c[i % NUM_TICKS])
-            person, txt = c[i % NUM_TICKS]
-            emit('message', {'person': person, 'txt': txt}, namespace='/', broadcast=True)
+            emit('message', obj(c[i % NUM_TICKS]), namespace='/', broadcast=True)
         elif (i % NUM_TICKS) == 6:
             print('----> reset')
             reset()

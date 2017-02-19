@@ -42,13 +42,40 @@
           src="https://code.jquery.com/jquery-3.1.1.js"
           integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
           crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
   <script type="text/javascript" charset="utf-8">
       var socket = io.connect('//' + document.domain + ':' + location.port);
-      socket.on('reset', function (data) {
+      function addLog(log) {
+          var chat_pos = '';
+          if (log.person == 0) {
+              chat_pos = 'left';
+          } else {
+              chat_pos = 'right';
+          }
+          var x = $('<div class="chat alert ' + chat_pos + '-chat">' +
+              '<img src="/static/bot.png" alt="bot">' +
+              log.txt +
+              '</div>').appendTo($("#chat-field"));
+          return x;
+      }
+      socket.on('uptd', function (data) {
           $('#chat-field').html('');
-      })
+          var logs = data.logs;
+          for (var i = 0; i < logs.length; i++) {
+              console.log(logs[i]);
+              addLog(logs[i]);
+          }
+      });
+      socket.on('reset', function (data) {
+          $(".chat").fadeOut(function () {
+              $('#chat-field').html('');
+          });
+      });
+      socket.on('message', function (data) {
+          var x = addLog(data);
+          x.hide();
+          x.slideDown();
+      });
   </script>
 
 </html>
