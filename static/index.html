@@ -112,6 +112,7 @@
     };
       var socket = io.connect('//' + document.domain + ':' + location.port);
       var inReveal = false;
+      var vote = {};
       function addLog(log) {
           var chat_pos = '';
           if (log.person == 0) {
@@ -125,22 +126,29 @@
               '</div>').appendTo($("#chat-field"));
           return x;
       }
+
+      function broadcastVote() {
+          if (vote.left && vote.right) {
+              socket.emit('vote', vote);
+          }
+      }
+
       socket.on('uptd', function (data) {
           $('#chat-field').html('');
           inReveal = false;
           var logs = data.logs;
           for (var i = 0; i < logs.length; i++) {
-              console.log(logs[i]);
               addLog(logs[i]);
           }
       });
       socket.on('reveal', function (data) {
-          $(".chat").fadeOut(function () {
+          $("#chat-field > *").fadeOut(function () {
+              vote = {};
               $('#chat-field').html('');
-              console.log(data);
               inReveal = true;
               var p1 = people[data.between[0]];
               var p2 = people[data.between[1]];
+              console.log(data);
               $('<h3>That was a conversation between...</h3>' +
                   '<div class="row">' +
                   '<div class="col col-md-3">' +
@@ -159,7 +167,55 @@
                   '<p class="card-text">(right)</p></div>' +
                   '</div>' +
                   '</div>' +
+                  '</div><h4>' + data.correctVotes +  "\/" + data.totalVotes + ' people got this right</h4>').appendTo($("#chat-field"));
+          });
+      });
+      socket.on('vote', function (data) {
+          $(".chat").fadeOut(function () {
+              $('#chat-field').html('');
+              var left = data.left;
+              var right = data.right;
+              var newL = [];
+              var newR = [];
+              for (var i = 0; i < 3; i++) {
+                    newL.push(people[left[i]]);
+                    newR.push(people[right[i]]);
+              }
+              $('<h3>Who do you think was talking? (answer both)</h3>' +
+                  '<div class="row">' +
+                  '<div class="col col-md-3">' +
+                  'Left' +
+                  '<div class="list-group" id="left-group">' +
+                  '<a href="#" class="list-group-item list-group-item-action" data-it="0">' + newL[0].name + '</a>' +
+                  '<a href="#" class="list-group-item list-group-item-action" data-it="1">' + newL[1].name + '</a>' +
+                  '<a href="#" class="list-group-item list-group-item-action" data-it="2">' + newL[2].name + '</a>' +
+                  '</div>' +
+                  '</div>' +
+                  '<div class="col col-md-3" id="right-group">' +
+                  'Right' +
+                  '<div class="list-group">' +
+                  '<a href="#" class="list-group-item list-group-item-action" data-it="0">' + newR[0].name + '</a>' +
+                  '<a href="#" class="list-group-item list-group-item-action" data-it="1">' + newR[1].name + '</a>' +
+                  '<a href="#" class="list-group-item list-group-item-action" data-it="2">' + newR[2].name + '</a>' +
+                  '</div>' +
+                  '</div>' +
                   '</div>').appendTo($("#chat-field"));
+              $("#chat-field #left-group a").on('click', function (event) {
+                  $("#chat-field #left-group a").toggleClass('active', false);
+                  var target = $(event.target);
+                  target.toggleClass('active', true);
+                  var choice = parseInt(target.data('it'));
+                  vote.left = left[choice];
+                  broadcastVote();
+              });
+              $("#chat-field #right-group a").on('click', function (event) {
+                  $("#chat-field #right-group a").toggleClass('active', false);
+                  var target = $(event.target);
+                  target.toggleClass('active', true);
+                  var choice = parseInt(target.data('it'));
+                  vote.right = right[choice];
+                  broadcastVote();
+              })
           });
       });
       socket.on('message', function (data) {

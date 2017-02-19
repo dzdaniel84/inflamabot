@@ -116,6 +116,15 @@ def get_between():
 def get_topic(p1, p2):
     return random.choice(p1.shared_with(p2))
 
+def pick_including(p, N=3):
+    l = [p]
+    while len(l) < N:
+        new_p = random.choice(persons)
+        if new_p not in l:
+            l.append(new_p)
+    random.shuffle(l)
+    return l
+
 
 def convo(between, length=20):
     first, second = between

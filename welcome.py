@@ -22,11 +22,13 @@ from mark import *
 app = Flask(__name__)
 
 TOTAL_LEN = 40
-NUM_TICKS = 8
+NUM_TICKS = 9
 
 c = []
 between = ()
 tick = 0
+total_votes = 0
+correct_votes = 0
 
 @app.route('/')
 def Welcome():
@@ -51,6 +53,14 @@ def new_client():
     print('<--- connect')
     emit('uptd', {'logs': [obj(e) for e in c[:getIndex]]})
 
+@socketio.on('vote')
+def on_vote(vote):
+    global total_votes, correct_votes
+    total_votes += 1
+    if vote['left'] == between[0].name and vote['right'] == between[1].name:
+        correct_votes += 1
+    print('<--- vote:', vote)
+
 def run_convos():
     start_time = time.time()
     def t():
@@ -58,7 +68,8 @@ def run_convos():
 
     def reset():
         global c
-        global between
+        global between, total_votes, correct_votes
+        total_votes = correct_votes = 0
         between = get_between()
 
         c = convo(between)
@@ -77,10 +88,15 @@ def run_convos():
             emit('message', obj(c[i % NUM_TICKS]), namespace='/', broadcast=True)
         elif (i % NUM_TICKS) == 6:
             print('---> vote')
-            emit('vote', namespace='/', broadcast=True)
-        elif (i % NUM_TICKS) == 7:
+            a, b = between
+            left = [p.name for p in pick_including(a)]
+            right = [p.name for p in pick_including(b)]
+            emit('vote', {'left': left, 'right': right}, namespace='/', broadcast=True)
+        elif (i % NUM_TICKS) == 8:
             print('---> reveal', between)
-            emit('reveal', {'between': make_between(between)}, namespace='/', broadcast=True)
+            emit('reveal', {'between': make_between(between),
+                            'totalVotes': total_votes,
+                            'correctVotes': correct_votes}, namespace='/', broadcast=True)
             reset()
         tick += 1
     while True:
