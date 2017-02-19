@@ -36,7 +36,7 @@ def create_text(name, url, out, len=10000):
 # people = ['clinton', 'bush', 'homer', 'jackson', 'kanye', 'kennedy', 'lincoln',
 #           'obama', 'reagan', 'roosevelt', 'stalin', 'trump', 'washington']
 #people = ['trump']
-people = ['han']
+people = ['palin']
 
 def loadpeople():
     for person in people:
