@@ -1,0 +1,34 @@
+.chat {
+    border: 1px solid #ccc !important;
+    background: #eee !important;
+}
+
+.chat img {
+    height: 30px;
+    width: 30px;
+}
+
+.left-chat {
+    width: 70%;
+    float: left;
+}
+
+.left-chat img {
+    position: relative;
+    left: -10px;
+}
+
+.right-chat img {
+    position: relative;
+    right: -10px;
+    float: right;
+}
+
+.right-chat {
+    width: 70%;
+    float: right;
+}
+
+.main {
+    margin-top: 50px;
+}

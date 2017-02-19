@@ -28,34 +28,12 @@ def Welcome():
 def WelcomeToMyapp():
     return 'Welcome again to my app running on Bluemix!'
 
-@app.route('/api/people')
-def GetPeople():
-    list = [
-        {'name': 'John', 'age': 28},
-        {'name': 'Bill', 'val': 26}
-    ]
-    return jsonify(results=list)
-
-@app.route('/api/people/<name>')
-def SayHello(name):
-    message = {
-        'message': 'Hello ' + name
-    }
-    return jsonify(results=message)
-
 socketio = SocketIO(app)
-
-@socketio.on('my event')
-def test_message(message):
-    print('[GOT]', message)
-    socketio.emit('my response', {'data': 'got it!'})
 
 def run_convos():
     start_time = time.time()
-    print(start_time)
     socketio.sleep(2)
     while True:
-        print('hi', time.time())
         socketio.sleep(0.5)
         with app.app_context():
             emit('my response', {'data': 'time is now: ' + str(time.time())},
