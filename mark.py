@@ -104,6 +104,11 @@ class Person:
 people = ['clinton', 'bush', 'homer', 'jackson', 'kanye', 'kennedy', 'lincoln',
           'obama', 'reagan', 'roosevelt', 'stalin', 'trump', 'washington', 'han', 'palin']
 
+people = ['homer', 'kanye', 'lincoln',
+          'obama', 'roosevelt', 'stalin', 'trump', 'washington', 'han', 'palin', 'deepak']
+
+people = ['palin', 'deepak']
+
 persons = [Person(person) for person in people]
 
 
