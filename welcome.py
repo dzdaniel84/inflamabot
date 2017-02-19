@@ -21,7 +21,7 @@ from mark import *
 
 app = Flask(__name__)
 
-TOTAL_LEN = 40
+TOTAL_LEN = 15
 NUM_TICKS = 8
 
 c = []
@@ -53,7 +53,7 @@ def new_client():
 def run_convos():
     start_time = time.time()
     def t():
-        return (time.time() - start_time)
+        return time.time() - start_time
 
     def reset():
         global c
