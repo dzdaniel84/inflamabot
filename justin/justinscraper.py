@@ -17,7 +17,8 @@ collection_id = '776be5b8-d34c-4145-8f1a-0dd950a510b3'
 JSON_FILE = "cnn_articles.json"
 
 # Scraping stuff
-cnn_paper = newspaper.build("http://cnn.com", memoize_articles=False)
+# cnn_paper = newspaper.build("http://cnn.com", memoize_articles=False)
+test_paper = newspaper.build("http://millercenter.org/president/speeches", memoize_articles=False)
 
 # takes each article, creates a JSON file of the texts
 def scrapeArticles(news_object): 
@@ -66,7 +67,7 @@ def getKeyWords():
 
 # takes in a JSON file name for the article, and the JSON_FILE that records what articles have been submitted, adds the document to Watson cloud
 def addDocument(file_name, JSON_FILE):
-    with open((os.path.join(os.getcwd(), '', file_name))) as fileinfo, open(JSON_FILE, 'w') as recording::
+    with open((os.path.join(os.getcwd(), '', file_name))) as fileinfo, open(JSON_FILE, 'w') as recording:
         # adds file to Waston API cloud
         try:
             add_doc = discovery.add_document(environment_id, collection_id, fileinfo=fileinfo)
@@ -77,10 +78,24 @@ def addDocument(file_name, JSON_FILE):
         recording.dump(file_name)
         recording.write('\n')
 
-
+def scrapeObamaArticles(JSON_FILE, news_object):
+    i = 0
+    for article in news_object.articles: 
+        article.download()
+        if article.is_downloaded: # if article properly downloads, start creating file and uploading
+            article.parse()
+            try:
+                # create a JSON file, add the file text to it, 
+                with open(JSON_FILE, 'w') as f:
+                    text = article.text
+                    f.write(text)
+                    print(text)
+                i += 1
+            except UnicodeEncodeError:
+                pass
 
 #writeToJSON(JSON_FILE)
-scrapeArticles(cnn_paper)
+scrapeObamaArticles(JSON_FILE, test_paper)
 
 
 
