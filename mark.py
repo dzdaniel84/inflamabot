@@ -45,11 +45,11 @@ class Person:
 		self.topics[t].remove(thing)
 		return thing
 
-washington = Person('Washington', '../Desktop/George Washington.txt')
-obama = Person('Obama', '../Desktop/Barack Obama.txt')
-hitler = Person('Hitler', '../Desktop/Adolf Hitler.txt')
-stalin = Person('Stalin', '../Desktop/Josef Stalin.txt')
-kanye = Person('Kanye', '../Desktop/Kanye West.txt')
+washington = Person('Washington', 'George Washington.txt')
+obama = Person('Obama', 'Barack Obama.txt')
+hitler = Person('Hitler', 'Adolf Hitler.txt')
+stalin = Person('Stalin', 'Josef Stalin.txt')
+kanye = Person('Kanye', 'Kanye West.txt')
 
 def convo(first, second, start_text, length = 20):
 	first_copy, second_copy = first.topics.copy(), second.topics.copy()
