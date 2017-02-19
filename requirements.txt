@@ -5,3 +5,4 @@ Flask==0.10.1
 gunicorn==19.6.0
 flask-socketio==2.8.4
 eventlet==0.20.1
+markovify==0.5.4
