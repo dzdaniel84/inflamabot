@@ -14,7 +14,9 @@
 
 import os
 from flask import Flask, jsonify, Blueprint
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, emit
+import time
+from threading import Thread
 
 app = Flask(__name__)
 
@@ -48,6 +50,18 @@ def test_message(message):
     print('[GOT]', message)
     socketio.emit('my response', {'data': 'got it!'})
 
+def run_convos():
+    start_time = time.time()
+    print(start_time)
+    socketio.sleep(2)
+    while True:
+        print('hi', time.time())
+        socketio.sleep(0.5)
+        with app.app_context():
+            emit('my response', {'data': 'time is now: ' + str(time.time())},
+                broadcast=True, namespace='/')
+
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
-	socketio.run(app, host='0.0.0.0', port=int(port))
+    socketio.start_background_task(run_convos)
+    socketio.run(app, host='0.0.0.0', port=int(port))
