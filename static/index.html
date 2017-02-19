@@ -96,6 +96,10 @@
         'clinton': {
             'name': 'Bill Clinton',
             'img': 'https://specials-images.forbesimg.com/imageserve/5638e0f8e4b0ffa7afe6a0ab/320x486.jpg?fit=scale&background=000000'
+        },
+        'han': {
+            'name': 'Han Solo',
+            'img': 'https://upload.wikimedia.org/wikipedia/en/b/be/Han_Solo_depicted_in_promotional_image_for_Star_Wars_(1977).jpg'
         }
     };
       var socket = io.connect('//' + document.domain + ':' + location.port);
@@ -123,7 +127,7 @@
           }
       });
       socket.on('reveal', function (data) {
-          $(".chat").fadeOut(10, function () {
+          $(".chat").fadeOut(function () {
               $('#chat-field').html('');
               console.log(data);
               inReveal = true;
@@ -150,19 +154,20 @@
                   '</div>').appendTo($("#chat-field"));
           });
       });
-      socket.on('reset', function (data) {
-          $(".chat").fadeOut(function () {
-              $('#chat-field').html('');
-          });
-      });
       socket.on('message', function (data) {
           if (inReveal) {
-              $('#chat-field').html('');
+              $("#chat-field > *").fadeOut(function () {
+                  $('#chat-field').html('');
+                  var x = addLog(data);
+                  x.hide();
+                  x.slideDown();
+              });
               inReveal = false;
+          } else {
+              var x = addLog(data);
+              x.hide();
+              x.slideDown();
           }
-          var x = addLog(data);
-          x.hide();
-          x.slideDown();
       });
   </script>
 

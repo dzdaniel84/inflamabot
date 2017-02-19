@@ -33,9 +33,10 @@ def create_text(name, url, out, len=10000):
         for t in sorted(topics):
             f.write(t + ' ' + ' '.join(topics[t]) + '\n')
 
-people = ['clinton', 'bush', 'homer', 'jackson', 'kanye', 'kennedy', 'lincoln',
-          'obama', 'reagan', 'roosevelt', 'stalin', 'trump', 'washington']
+# people = ['clinton', 'bush', 'homer', 'jackson', 'kanye', 'kennedy', 'lincoln',
+#           'obama', 'reagan', 'roosevelt', 'stalin', 'trump', 'washington']
 #people = ['trump']
+people = ['han']
 
 def loadpeople():
     for person in people:

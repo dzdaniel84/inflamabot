@@ -48,6 +48,7 @@ def make_between(between):
 @socketio.on('connect')
 def new_client():
     getIndex = min(tick % NUM_TICKS, 6)
+    print('<--- connect')
     emit('uptd', {'logs': [obj(e) for e in c[:getIndex]]})
 
 def run_convos():
@@ -71,12 +72,12 @@ def run_convos():
             print('--->', c[i % NUM_TICKS])
             emit('message', obj(c[i % NUM_TICKS]), namespace='/', broadcast=True)
         elif (i % NUM_TICKS) == 6:
-            print('----> reveal', between)
-            emit('reveal', {'between': make_between(between)}, namespace='/', broadcast=True)
+            print('---> vote')
+            emit('vote', namespace='/', broadcast=True)
         elif (i % NUM_TICKS) == 7:
-            print('----> reset')
+            print('---> reveal', between)
+            emit('reveal', {'between': make_between(between)}, namespace='/', broadcast=True)
             reset()
-            emit('reset', namespace='/', broadcast=True)
         tick += 1
     while True:
         socketio.sleep(0.1)

@@ -102,7 +102,7 @@ class Person:
         return self.get_generated(t)
 
 people = ['clinton', 'bush', 'homer', 'jackson', 'kanye', 'kennedy', 'lincoln',
-          'obama', 'reagan', 'roosevelt', 'stalin', 'trump', 'washington']
+          'obama', 'reagan', 'roosevelt', 'stalin', 'trump', 'washington', 'han']
 
 persons = [Person(person) for person in people]
 
