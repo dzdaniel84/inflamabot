@@ -47,25 +47,31 @@ class Person:
             return 'I have nothing to say'
         t = text[random.randint(0, len(text) - 1)]
         thing = self.topics[t][random.randint(0, len(self.topics[t]) - 1)]
-        self.topics[t].remove(thing)
+        #self.topics[t].remove(thing)
         return thing
 
 
-washington = Person('Washington', 'people/George Washington.txt')
+#washington = Person('Washington', 'people/George Washington.txt')
 obama = Person('Obama', 'people/Barack Obama.txt')
-hitler = Person('Hitler', 'people/Adolf Hitler.txt')
-stalin = Person('Stalin', 'people/Josef Stalin.txt')
-kanye = Person('Kanye', 'people/Kanye West.txt')
+#hitler = Person('Hitler', 'people/Adolf Hitler.txt')
+#stalin = Person('Stalin', 'people/Josef Stalin.txt')
+#kanye = Person('Kanye', 'people/Kanye West.txt')
 trump = Person('Trump', 'people/Donald Trump.txt')
 
+def get_topic(first, second):
+    return random.choice(list(first.topics.keys() | second.topics.keys()))
 
-def convo(first, second, start_text, length=20):
+def convo(first, second, length=20):
+    start_text = get_topic(first, second)
+    transcript = []
     first_copy, second_copy = first.topics.copy(), second.topics.copy()
     first_response, second_response = first.return_statement(start_text), ""
+    transcript.append((0, first_response))
     while (
             first_response != 'I have nothing to say' and second_response != 'I have nothing to say'):
-        print("{}: {}".format(bold(first.name.upper()), first_response))
         second_response = second.return_statement(first_response)
-        print("{}: {}".format(bold(second.name.upper()), second_response))
+        transcript.append((1, second_response))
         first_response = first.return_statement(second_response)
+        transcript.append((0, first_response))
     first.topics, second.topics = first_copy, second_copy
+    return transcript

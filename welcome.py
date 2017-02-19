@@ -17,8 +17,12 @@ from flask import Flask, jsonify, Blueprint
 from flask_socketio import SocketIO, emit
 import time
 from threading import Thread
+from mark import *
 
 app = Flask(__name__)
+
+TOTAL_LEN = 30
+NUM_TICKS = 7
 
 @app.route('/')
 def Welcome():
@@ -32,12 +36,34 @@ socketio = SocketIO(app)
 
 def run_convos():
     start_time = time.time()
-    socketio.sleep(2)
+    def t():
+        return (time.time() - start_time)
+    c = []
+    def reset():
+        nonlocal c
+        c = convo(trump, obama)
+        while len(c) < 7:
+            print('running regen')
+            c = convo(trump, obama)
+    tick = 0
+    reset()
+    def do_tick(i):
+        nonlocal tick
+        if (i % NUM_TICKS) <= 5:
+            print('--->', c[i % NUM_TICKS])
+            person, txt = c[i % NUM_TICKS]
+            emit('message', {'person': person, 'txt': txt}, namespace='/', broadcast=True)
+        elif (i % NUM_TICKS) == 6:
+            print('----> reset')
+            reset()
+            emit('reset', namespace='/', broadcast=True)
+        tick += 1
     while True:
-        socketio.sleep(0.5)
+        socketio.sleep(0.1)
         with app.app_context():
-            emit('my response', {'data': 'time is now: ' + str(time.time())},
-                broadcast=True, namespace='/')
+            cur_time = t()
+            while tick < cur_time * (NUM_TICKS / TOTAL_LEN):
+                do_tick(tick)
 
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
