@@ -51,11 +51,11 @@ class Person:
         return thing
 
 
-washington = Person('Washington', '../Desktop/George Washington.txt')
-obama = Person('Obama', '../Desktop/Barack Obama.txt')
-hitler = Person('Hitler', '../Desktop/Adolf Hitler.txt')
-stalin = Person('Stalin', '../Desktop/Josef Stalin.txt')
-kanye = Person('Kanye', '../Desktop/Kanye West.txt')
+washington = Person('Washington', 'people/George Washington.txt')
+obama = Person('Obama', 'people/Barack Obama.txt')
+hitler = Person('Hitler', 'people/Adolf Hitler.txt')
+stalin = Person('Stalin', 'people/Josef Stalin.txt')
+kanye = Person('Kanye', 'people/Kanye West.txt')
 
 
 def convo(first, second, start_text, length=20):
