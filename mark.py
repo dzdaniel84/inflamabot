@@ -25,20 +25,20 @@ class Person:
         self.name = name
         self.text = get_text(loc)
         self.topics = {}
-        self.text_model = markovify.Text(self.text)
-        self.parse_sentences()
+        #self.text_model = markovify.Text(self.text)
+        #self.parse_sentences()
 
-    def parse_sentences(self):
-        for i in range(500):
-            try:
-                t = self.text_model.make_sentence()
-                items = run_rake(t)
-                for i in items:
-                    if i not in self.topics:
-                        self.topics[i] = []
-                    self.topics[i].append(t)
-            except TypeError:
-                continue
+    # def parse_sentences(self):
+    #     for i in range(500):
+    #         try:
+    #             t = self.text_model.make_sentence()
+    #             items = run_rake(t)
+    #             for i in items:
+    #                 if i not in self.topics:
+    #                     self.topics[i] = []
+    #                 self.topics[i].append(t)
+    #         except TypeError:
+    #             continue
 
     def return_statement(self, text):
         text = [item for item in text.split(' ') if
@@ -50,21 +50,22 @@ class Person:
         #self.topics[t].remove(thing)
         return thing
 
-washington = Person('Washington', 'people/washington.txt')
-obama = Person('Obama', 'people/obama.txt')
-stalin = Person('Stalin', 'people/stalin.txt')
-kanye = Person('Kanye', 'people/kanye.txt')
-trump = Person('Trump', 'people/trump.txt')
-fdroosevelt = Person('Roosevelt', 'people/fdroosevelt.txt')
-gwbush = Person('Bush', 'people/gwbush.txt')
-homer = Person('Homer', 'people/homer.txt')
-jackson = Person('Jackson', 'people/jackson.txt')
-kennedy = Person('Kennedy', 'people/kennedy.txt')
-lincoln = Person('Lincoln', 'people/lincoln.txt')
-reagan = Person('Reagan', 'people/reagan.txt')
-clinton = Person('Clinton', 'people/clinton.txt')
+# washington = Person('Washington', 'people/washington.txt')
+# obama = Person('Obama', 'people/obama.txt')
+# stalin = Person('Stalin', 'people/stalin.txt')
+# kanye = Person('Kanye', 'people/kanye.txt')
+# trump = Person('Trump', 'people/trump.txt')
+# fdroosevelt = Person('Roosevelt', 'people/fdroosevelt.txt')
+# gwbush = Person('Bush', 'people/gwbush.txt')
+# homer = Person('Homer', 'people/homer.txt')
+# jackson = Person('Jackson', 'people/jackson.txt')
+# kennedy = Person('Kennedy', 'people/kennedy.txt')
+# lincoln = Person('Lincoln', 'people/lincoln.txt')
+# reagan = Person('Reagan', 'people/reagan.txt')
+# clinton = Person('Clinton', 'people/clinton.txt')
 
-people = [washington, obama, stalin, kanye, trump, fdroosevelt, gwbush, homer, jackson, kennedy, lincoln, reagan, clinton]
+people = ['clinton', 'bush', 'homer', 'jackson', 'kanye', 'kennedy', 'lincoln',
+          'obama', 'reagan', 'roosevelt', 'stalin', 'trump', 'washington']
 
 def get_between():
     p1 = random.choice(people)
